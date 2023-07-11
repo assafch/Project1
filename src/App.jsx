@@ -11,44 +11,53 @@ const urlTodos = 'https://jsonplaceholder.typicode.com/todos';
 const urlPosts = 'https://jsonplaceholder.typicode.com/posts';
 
 export default function App() {
+  // Initialize states for users, todos and posts
   const [users, setUsers] = useState([]);
   const [todos, setTodos] = useState([]);
   const [posts, setPosts] = useState([]);
 
+  // State for filtered users for search functionality
   const [filteredUsers, setFilteredUsers] = useState([]);
 
+  // States to handle flags for adding todos, posts and users
   const [addTodoFlag, setAddTodoFlag] = useState(null);
   const [addPostFlag, setAddPostFlag] = useState(null);
   const [openTodoFlag, setOpenTodoFlag] = useState(null);
   const [openPostFlag, setOpenPostFlag] = useState(null);
   const [addNewUserFlag, setAddNewUserFlag] = useState(null);
-
+  
+  // States for new todos, posts and users
   const [newTodo, setNewTodo] = useState({ userId: null, id: null, title: '', completed: false });
   const [newPost, setNewPost] = useState({ userId: null, id: null, title: '', body: '' });
   const [newUser, setNewUser] = useState({ name: '', email: '' });
 
+  // Fetch data when component is mounted
   useEffect(() => {
     fetchUsers();
     fetchPosts();
     fetchTodos();
   }, []);
 
+  // Function to fetch users
   async function fetchUsers() {
     const res = await axios.get(urlUser);
     setUsers(res.data)
     setFilteredUsers(res.data)
   }
 
+  // Function to fetch todos
   async function fetchTodos() {
     const res = await axios.get(urlTodos);
     setTodos(res.data)
   }
 
+  // Function to fetch posts
   async function fetchPosts() {
     const res = await axios.get(urlPosts);
     setPosts(res.data)
   }
 
+  // Function to handle search
   function handleSearch(e) {
     const searchTerm = e.target.value.toLowerCase();
     const filtered = users.filter(user =>
@@ -57,6 +66,7 @@ export default function App() {
     setFilteredUsers(filtered);
   }
 
+  // Function to delete a user
   function handleDeleteUser(id) {
     const newUsers = users.filter(user => user.id !== id);
     setUsers(newUsers);
@@ -68,6 +78,7 @@ export default function App() {
     setPosts(newPosts);
   }
 
+  // Function to open todos of a user
   function openTodos(id) {
     setAddTodoFlag(null);
     setAddPostFlag(null);
@@ -75,6 +86,7 @@ export default function App() {
     setOpenPostFlag(id);
   }
 
+  // Function to update todos
   const updateTodos = (updatedTodos) => {
     const mergedTodos = todos.map(todo => {
       // Check if there's an updated version of the current todo in updatedTodos
@@ -95,7 +107,7 @@ export default function App() {
     setTodos(mergedTodos);
   };
   
-
+  // Function to update user details
   const updateUser = (id, newName, newEmail) => {
     const updatedUsers = users.map(user => {
       if (user.id === id) {
@@ -115,6 +127,7 @@ export default function App() {
     setFilteredUsers(updatedFilteredUsers);
   }
 
+  // Function to add a new todo
   const addingNewTodo = () => {
     // Increment the id to simulate new data addition.
     const nextId = todos.length > 0 ? Math.max(...todos.map(todo => todo.id)) + 1 : 1;
@@ -134,7 +147,8 @@ export default function App() {
     setOpenTodoFlag(addTodoFlag);
     setAddTodoFlag(null);
   }
-
+  
+  // Function to add a new post
   const addingNewPost = () => {
     // Increment the id to simulate new data addition.
     const nextId = posts.length > 0 ? Math.max(...posts.map(post => post.id)) + 1 : 1;
@@ -156,16 +170,19 @@ export default function App() {
   };
   
 
+  // Function to open the add todo form
   const openAddTodo = (id) => {
     setOpenTodoFlag(null);
     setAddTodoFlag(id);
   }
 
+  // Function to open the add post form
   const openAddPost = (id) => {
     setOpenPostFlag(null);
     setAddPostFlag(id);
   }
 
+  // Function to open the add user form
   const openAddUser = () => {
     setAddTodoFlag(false);
     setAddPostFlag(false);
@@ -174,6 +191,7 @@ export default function App() {
     setAddNewUserFlag(true);
   }
 
+  // Function to add a new user
   const addNewUser = () => {
     const nextId = users.length > 0 ? Math.max(...users.map(user => user.id)) + 1 : 1;
     const nextUser = {
